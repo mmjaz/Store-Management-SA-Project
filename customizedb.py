@@ -159,7 +159,7 @@ class toollabel(QtGui.QWidget):
         self.setLayout(self.contentbox)
         self.contentbox.setSpacing(0)
 
-        self.icn_lb = mylabel2(0,'red')
+        self.icn_lb = mylabel2(0,'blue') # unuseful entered color and font size
         self.icn_lb.mylb2_clicked.connect(self.select_iclb)
         self.icn_lb.mylb2_undermouse.connect(self.undermouse_iclb)
         self.icn_lb.mylb2_outmouse.connect(self.outmouse_iclb)
@@ -175,7 +175,7 @@ class toollabel(QtGui.QWidget):
         self.ptxt_lb.mylb2_outmouse.connect(self.outmouse_iclb)
         self.ptxt_lb.setMargin(1)
         self.ptxt_lb.setText(ptext)
-        self.contentbox.addWidget(self.ptxt_lb, 0, 2, 1, 4)
+        self.contentbox.addWidget(self.ptxt_lb, 0, 2, 1, 6)
 
         self.stxt_lb = mylabel2(8, 'black')
         self.stxt_lb.mylb2_clicked.connect(self.select_iclb)
@@ -183,7 +183,7 @@ class toollabel(QtGui.QWidget):
         self.stxt_lb.mylb2_outmouse.connect(self.outmouse_iclb)
         self.stxt_lb.setMargin(1)
         self.stxt_lb.setText(stext)
-        self.contentbox.addWidget(self.stxt_lb, 1, 2, 1, 4)
+        self.contentbox.addWidget(self.stxt_lb, 1, 2, 1, 6)
 
     def select_iclb(self):
 
