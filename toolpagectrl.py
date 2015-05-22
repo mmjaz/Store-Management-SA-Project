@@ -33,16 +33,23 @@ class base(QtGui.QWidget):
 
         self.contentbox.addWidget(self.sectionname, 0, 0, 2, 21)
 
+
     def addWidget(self, item, r, c, rs, cs):
 
         self.contentbox.addWidget(item, r, c, rs, cs)
+
+    def ctrl_handler(self, toolname):
+
+        """This method defines the corresponding action of the button """
+
+        print '%s clicked'%toolname
 
 
 class home(base):
     
     def __init__(self):
         
-        base.__init__(self, 'Home',20)
+        base.__init__(self, 'Home', 20)
         self.construct()
 
     def construct(self):
@@ -138,12 +145,14 @@ class employee_management(base):
 
     def __init__(self):
 
-        base.__init__(self, 'Employee Management', 270)
+        base.__init__(self, 'Employee Management', 233)
         self.construct()
 
     def construct(self):
 
         vbox = QtGui.QVBoxLayout()
+
+        vbox.addSpacing(40)
 
         self.new_emp = customizedlb.toollabel('New Employee', 'Add a new member', '%s\Pics\\tool menu\employee management\\add.png'%os.getcwd())
         self.new_emp.toollabel_clicked.connect(partial(self.ctrl_handler, 'New Employee'))
@@ -161,27 +170,67 @@ class employee_management(base):
         widget.setLayout(vbox)
         self.addWidget(widget, 4, 2, 8, 6)
 
-    def ctrl_handler(self, toolname):
-
-        print '%s clicked'%toolname
-
-
-class account(base):
-
-    def __init__(self):
-        base.__init__(self,'Not created account page', 489)
-
 
 class item_management(base):
 
     def __init__(self):
-        base.__init__(self,'Not created item mgt page', 489)
+        base.__init__(self, 'Item Management', 167)
+        self.construct()
+
+    def construct(self):
+
+        vbox = QtGui.QVBoxLayout()
+
+        vbox.addSpacing(40)
+
+        self.item_list = customizedlb.toollabel('Item List', 'List of all items', '%s\Pics\\tool menu\item management\item list.png'%os.getcwd())
+        self.item_list.toollabel_clicked.connect(partial(self.ctrl_handler, 'Item List'))
+        vbox.addWidget(self.item_list)
+
+        self.new_item = customizedlb.toollabel('New Item', 'Add a new Item', '%s\Pics\\tool menu\item management\\new item.png'%os.getcwd())
+        self.new_item.toollabel_clicked.connect(partial(self.ctrl_handler, 'New Item'))
+        vbox.addWidget(self.new_item)
+
+        self.modify_item = customizedlb.toollabel('Modify Item', 'Change item info', '%s\Pics\\tool menu\item management\modify item.png'%os.getcwd())
+        self.modify_item.toollabel_clicked.connect(partial(self.ctrl_handler, 'Modify Item'))
+        vbox.addWidget(self.modify_item)
+
+        self.remove_item = customizedlb.toollabel('Remove Item', 'Remove item', '%s\Pics\\tool menu\item management\\remove item.png'%os.getcwd())
+        self.remove_item.toollabel_clicked.connect(partial(self.ctrl_handler, 'Remove Item'))
+        vbox.addWidget(self.remove_item)
+
+        widget = QtGui.QWidget()
+        widget.setLayout(vbox)
+        self.addWidget(widget, 4, 2, 8, 6)
 
 
 class order_management(base):
 
     def __init__(self):
-        base.__init__(self,'Not created order mgt page', 489)
+        base.__init__(self,'Order Management', 227)
+        self.construct()
+
+    def construct(self):
+
+        vbox = QtGui.QVBoxLayout()
+
+        vbox.addSpacing(40)
+
+        self.new_order = customizedlb.toollabel('New Order', 'Add a new order', '%s\Pics\\tool menu\order management\\new order.png'%os.getcwd())
+        self.new_order.toollabel_clicked.connect(partial(self.ctrl_handler, 'New Order'))
+        vbox.addWidget(self.new_order)
+
+        self.modify_order = customizedlb.toollabel('Modify Order', 'Change order info', '%s\Pics\\tool menu\order management\modify order.png'%os.getcwd())
+        self.modify_order.toollabel_clicked.connect(partial(self.ctrl_handler, 'Modify Order'))
+        vbox.addWidget(self.modify_order)
+
+        self.order_status = customizedlb.toollabel('Order Status', 'Peygiri order', '%s\Pics\\tool menu\order management\order status.png'%os.getcwd())
+        self.order_status.toollabel_clicked.connect(partial(self.ctrl_handler, 'Order Status'))
+        vbox.addWidget(self.order_status)
+
+        widget = QtGui.QWidget()
+        widget.setLayout(vbox)
+        self.addWidget(widget, 4, 2, 8, 6)
 
 
 class producer_info(base):
@@ -199,16 +248,135 @@ class kala_aghsati(base):
 class report(base):
 
     def __init__(self):
-        base.__init__(self,'Not created report page', 489)
+
+        base.__init__(self, 'Report', 233)
+        self.construct()
+
+    def construct(self):
+
+        vbox = QtGui.QVBoxLayout()
+
+        vbox.addSpacing(40)
+
+        self.Items_report = customizedlb.toollabel('Items Report', 'Get report about items', '%s\Pics\\tool menu\\report\items report.png'%os.getcwd())
+        self.Items_report.toollabel_clicked.connect(partial(self.ctrl_handler, 'Items Report'))
+        vbox.addWidget(self.Items_report)
+
+        self.advance_search = customizedlb.toollabel('Advance Search', 'Search Presicely', '%s\Pics\\tool menu\\report\search.png'%os.getcwd())
+        self.advance_search.toollabel_clicked.connect(partial(self.ctrl_handler, 'Advance Search'))
+        vbox.addWidget(self.advance_search)
+
+        self.advance_report = customizedlb.toollabel('Advance Report', 'Get accurate report', '%s\Pics\\tool menu\\report\\advance report.png'%os.getcwd())
+        self.advance_report.toollabel_clicked.connect(partial(self.ctrl_handler, 'Advance Report'))
+        vbox.addWidget(self.advance_report)
+
+        widget = QtGui.QWidget()
+        widget.setLayout(vbox)
+        self.addWidget(widget, 4, 2, 8, 6)
+
+
+class account(base):
+
+    def __init__(self):
+        base.__init__(self,'Account', 155)
+        self.construct()
+
+    def construct(self):
+
+        vbox = QtGui.QVBoxLayout()
+
+        vbox.addSpacing(40)
+
+        self.new_account = customizedlb.toollabel('New Account', 'Create a new account', '%s\Pics\\tool menu\\account\\new.png'%os.getcwd())
+        self.new_account.toollabel_clicked.connect(partial(self.ctrl_handler, 'New Account'))
+        vbox.addWidget(self.new_account)
+
+        self.modify_account = customizedlb.toollabel('Modify Account', 'Modify an existing account', '%s\Pics\\tool menu\\account\modify.png'%os.getcwd())
+        self.modify_account.toollabel_clicked.connect(partial(self.ctrl_handler, 'Modify Account'))
+        vbox.addWidget(self.modify_account)
+
+        self.block_account = customizedlb.toollabel('Block Account', 'Modify an existing account', '%s\Pics\\tool menu\\account\\block.png'%os.getcwd())
+        self.block_account.toollabel_clicked.connect(partial(self.ctrl_handler, 'Block Account'))
+        vbox.addWidget(self.block_account)
+
+        self.remove_account = customizedlb.toollabel('Remove Account', 'Remove an account', '%s\Pics\\tool menu\\account\\remove.png'%os.getcwd())
+        self.remove_account.toollabel_clicked.connect(partial(self.ctrl_handler, 'Remove Account'))
+        vbox.addWidget(self.remove_account)
+
+        widget = QtGui.QWidget()
+        widget.setLayout(vbox)
+        self.addWidget(widget, 4, 2, 8, 6)
 
 
 class setting(base):
 
     def __init__(self):
-        base.__init__(self,'Not created setting page', 489)
+        base.__init__(self,'Setting', 167)
+        self.construct()
+
+    def construct(self):
+
+        vbox = QtGui.QVBoxLayout()
+
+        vbox.addSpacing(40)
+
+        self.network_config = customizedlb.toollabel('Network Configuration', 'Set  network IP', '%s\Pics\\tool menu\setting\\network.png'%os.getcwd())
+        self.network_config.toollabel_clicked.connect(partial(self.ctrl_handler, 'Network Configuration'))
+        hbox1 = QtGui.QHBoxLayout()
+        hbox1.addWidget(self.network_config)
+        hbox1.setContentsMargins(6,0,0,0)
+        vbox.addLayout(hbox1)
+
+        self.change_account_info = customizedlb.toollabel('Change Account Info', 'Change Account Info', '%s\Pics\\tool menu\setting\change info.png'%os.getcwd())
+        self.change_account_info.toollabel_clicked.connect(partial(self.ctrl_handler, 'Modify Account'))
+        hbox2 = QtGui.QHBoxLayout()
+        hbox2.addWidget(self.change_account_info)
+        hbox2.setContentsMargins(6,0,0,0)
+        vbox.addLayout(hbox2)
+
+        self.product_activation = customizedlb.toollabel('Product Activation', 'Activate Product With License Key', '%s\Pics\\tool menu\setting\\activate.png'%os.getcwd())
+        self.product_activation.toollabel_clicked.connect(partial(self.ctrl_handler, 'Product Activation'))
+        hbox3 = QtGui.QHBoxLayout()
+        hbox3.addWidget(self.product_activation)
+        hbox3.setContentsMargins(6,0,0,0)
+        vbox.addLayout(hbox3)
+
+        self.update_product = customizedlb.toollabel('Update Product', 'Installed Version : 1.1', '%s\Pics\\tool menu\setting\update.png'%os.getcwd())
+        self.update_product.toollabel_clicked.connect(partial(self.ctrl_handler, 'Remove Account'))
+        hbox4 = QtGui.QHBoxLayout()
+        hbox4.addWidget(self.update_product)
+        hbox4.setContentsMargins(6,0,0,0)
+        vbox.addLayout(hbox4)
+
+        widget = QtGui.QWidget()
+        widget.setLayout(vbox)
+        self.addWidget(widget, 4, 2, 8, 6)
 
 
 class help(base):
 
     def __init__(self):
-        base.__init__(self,'Not created help page', 489)
+        base.__init__(self,'Help', 233)
+        self.construct()
+
+    def construct(self):
+
+        vbox = QtGui.QVBoxLayout()
+
+        vbox.addSpacing(40)
+
+        self.help = customizedlb.toollabel('Help', 'Help', '%s\Pics\\tool menu\help\\help.png'%os.getcwd())
+        self.help.toollabel_clicked.connect(partial(self.ctrl_handler, 'Help'))
+        vbox.addWidget(self.help)
+
+        self.support = customizedlb.toollabel('Support', 'Get Online Help', '%s\Pics\\tool menu\help\support.png'%os.getcwd())
+        self.support.toollabel_clicked.connect(partial(self.ctrl_handler, 'Support'))
+        vbox.addWidget(self.support)
+
+        self.SMS_info = customizedlb.toollabel('SMS Information', 'About System', '%s\Pics\\tool menu\help\information.png'%os.getcwd())
+        self.SMS_info.toollabel_clicked.connect(partial(self.ctrl_handler, 'SMS Info'))
+        vbox.addWidget(self.SMS_info)
+
+        widget = QtGui.QWidget()
+        widget.setLayout(vbox)
+        self.addWidget(widget, 4, 2, 8, 6)
