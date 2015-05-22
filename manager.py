@@ -69,29 +69,29 @@ class manager(QtGui.QWidget):
         self.contentbox.addWidget(self.employee_management_lb, 7, 0, 2, 7)
         self.employee_management_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'employee_management'))
 
-        self.account_lb = menulbcalss('Account', '%s\Pics\Menu\\account.png'%os.getcwd())
-        self.contentbox.addWidget(self.account_lb, 9, 0, 2, 7)
-        self.account_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'account'))
-
         self.item_management_lb = menulbcalss('Item Management', '%s\Pics\Menu\item.png'%os.getcwd())
-        self.contentbox.addWidget(self.item_management_lb, 11, 0, 2, 7)
+        self.contentbox.addWidget(self.item_management_lb, 9, 0, 2, 7)
         self.item_management_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'item_management'))
 
         self.order_management_lb = menulbcalss('Order Management', '%s\Pics\Menu\order.png'%os.getcwd())
-        self.contentbox.addWidget(self.order_management_lb, 13, 0, 2, 7)
+        self.contentbox.addWidget(self.order_management_lb, 11, 0, 2, 7)
         self.order_management_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'order_management'))
 
         self.producer_info_lb = menulbcalss('Producer Info', '%s\Pics\Menu\\factory.png'%os.getcwd())
-        self.contentbox.addWidget(self.producer_info_lb, 15, 0, 2, 7)
+        self.contentbox.addWidget(self.producer_info_lb, 13, 0, 2, 7)
         self.producer_info_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'producer_info'))
 
         self.kala_aghsati_lb = menulbcalss('Kala Aghsati', '%s\Pics\Menu\kala aghsati.png'%os.getcwd())
-        self.contentbox.addWidget(self.kala_aghsati_lb, 17, 0, 2, 7)
+        self.contentbox.addWidget(self.kala_aghsati_lb, 15, 0, 2, 7)
         self.kala_aghsati_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'kala_aghsati'))
 
         self.report_lb = menulbcalss('Report', '%s\Pics\Menu\\report.png'%os.getcwd())
-        self.contentbox.addWidget(self.report_lb, 19, 0, 2, 7)
+        self.contentbox.addWidget(self.report_lb, 17, 0, 2, 7)
         self.report_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'report'))
+
+        self.account_lb = menulbcalss('Account', '%s\Pics\Menu\\account.png'%os.getcwd())
+        self.contentbox.addWidget(self.account_lb, 19, 0, 2, 7)
+        self.account_lb.selected_tool_sgnl.connect(partial(self.mylb_handler, 'account'))
 
         self.setting_lb = menulbcalss('Setting', '%s\Pics\Menu\setting.png'%os.getcwd())
         self.contentbox.addWidget(self.setting_lb, 21, 0, 2, 7)
