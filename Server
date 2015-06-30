@@ -1,0 +1,75 @@
+import socket
+import threading
+import SocketServer
+import ast
+
+import dbtest
+class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
+
+    def handle(self):
+        data = str(self.request.recv(1024))
+
+        cur_thread = threading.current_thread()
+        response = bytes("{}: {}".format(cur_thread.name, data))
+        b=ast.literal_eval(data)
+        print b
+
+        if b[1]==1:
+            dbtest.insertIntoEmployee(b[0])
+        elif b[1]==2:
+            dbtest.updateEmployee(b[0])
+        elif b[1]==3:
+            dbtest.deleteEmployee(b[0])
+        elif b[1]==4:
+            m=dbtest.searchEmployee()
+            response = bytes("{}: {}".format(cur_thread.name, m))
+
+        elif b[1]==6:
+            dbtest.insertIntoKala(b[0])
+        elif b[1]==7:
+            dbtest.updateKala(b[0])
+        elif b[1]==8:
+            dbtest.deleteKala(b[0])
+        elif b[1]==9:
+            n=dbtest.searchKala()
+            response = bytes("{}: {}".format(cur_thread.name, m))
+
+
+
+        self.request.sendall(response)
+
+class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+    pass
+'''
+def client(ip, port, message):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((ip, port))
+    try:
+        sock.sendall(bytes(message))
+        response = str(sock.recv(1024))
+        print("Received: {}".format(response))
+    finally:
+        sock.close()'''
+
+if __name__ == "__main__":
+    # port 0 means to select an arbitrary unused port
+    HOST, PORT = "", 8000
+
+    server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
+    ip, port = server.server_address
+    print ip ,port
+
+    # start a thread with the server. 
+    # the thread will then start one more thread for each request.
+    server_thread = threading.Thread(target=server.serve_forever)
+
+    # exit the server thread when the main thread terminates
+    server_thread.daemon = True
+    server_thread.start()
+    print("Server loop running in thread:", server_thread.name)
+
+    server.serve_forever()
+    #server.shutdown()
+    
+
+   
