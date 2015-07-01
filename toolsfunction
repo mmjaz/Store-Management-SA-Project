@@ -1,0 +1,1496 @@
+#be nam _e_ khoda
+
+import sys
+from PyQt4 import QtCore,QtGui,Qt
+import datetime
+from functools import partial
+import customizedlb
+from control import Controller
+
+
+class Search(QtGui.QWidget):
+
+    def __init__(self, list):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+        Search_lb = QtGui.QLabel('Search By:')
+        Search_lb.setStyleSheet('QLabel{background-color : white;}')
+        Search_combo_box = QtGui.QComboBox()
+
+        for menu_list in list:
+            Search_combo_box.addItem(menu_list)
+
+
+        Search_entry = QtGui.QLineEdit()
+
+        Search_btn = QtGui.QPushButton('Search')
+
+        Search_layout = QtGui.QHBoxLayout()
+        Search_layout.setContentsMargins(10,0,25,0)
+        Search_layout.addWidget(Search_lb)
+        Search_layout.addWidget(Search_combo_box)
+        Search_layout.addWidget(Search_entry)
+        Search_layout.addWidget(Search_btn)
+
+        self.setLayout(Search_layout)
+
+
+class Calendar(QtGui.QWidget):
+
+    def __init__(self):
+        super(Calendar, self).__init__()
+        self.setupUi()
+
+    def setupUi(self):
+        layout = QtGui.QGridLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setContentsMargins(0,0,0,0)
+        layout.setMargin(0)
+        self.dateEdit = QtGui.QDateEdit()
+        self.dateEdit.setDate(QtCore.QDate.currentDate())
+        self.dateEdit.setCalendarPopup(True)
+        self.dateEdit.calendarWidget().installEventFilter(self)
+        layout.addWidget(self.dateEdit, 0, 0)
+        #layout.addItem(QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
+        self.setLayout(layout)
+
+    def eventFilter(self, obj, event):
+        if obj == self.dateEdit.calendarWidget() and event.type() == QtCore.QEvent.Show:
+            pos = self.dateEdit.mapToGlobal(self.dateEdit.geometry().bottomRight())
+            width = self.dateEdit.calendarWidget().window().width()
+            self.dateEdit.calendarWidget().window().move(pos.x() - width, pos.y())
+        return False
+
+
+class NewEmployee(QtGui.QWidget):
+
+    """The base class for the window containing the tools of the selected section. """
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+        self.control = Controller()
+
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 0, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+
+        # self.sectionname = QtGui.QLabel()
+        # self.sectionname.setText('New Employee')
+        # self.sectionname.setAlignment(QtCore.Qt.AlignCenter)
+
+        # self.setStyleSheet("QLabel { background-color : rgb(220,225,230); color : black; }")
+        # font = QtGui.QFont('Arial', 12)
+        # font.setBold(True)
+        # self.sectionname.setFont(font)
+
+
+        # self.contentbox.addSpacing(20)
+
+        self.section = QtGui.QLabel('Personal Information:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+        layout123 = QtGui.QHBoxLayout()
+        self.contentbox.addLayout(layout123)
+        layout1 = QtGui.QVBoxLayout()
+        layout1.setContentsMargins(14,0,0,0)
+        layout2 = QtGui.QVBoxLayout()
+        layout1.setContentsMargins(7,0,7,0)
+        layout3 = QtGui.QVBoxLayout()
+        layout3.setContentsMargins(0,0,14,0)
+        layout123.addLayout(layout1)
+        layout123.addLayout(layout2)
+        layout123.addLayout(layout3)
+
+        pic = QtGui.QLabel()
+        pic.setFixedSize(70, 70)
+        pic.setPixmap(QtGui.QPixmap("userpic1.jpg"))
+        layout1.addWidget(pic)
+        layout1.addSpacing(150)
+
+
+        self.fnamefield = customizedlb.formfield('First Name:')
+        self.lnamefield = customizedlb.formfield('Last Name:')
+        self.fathernamefield = customizedlb.formfield("Father's Name:")
+        self.shenasnamefield = customizedlb.formfield('Shenasname:')
+        self.nationalityfield = customizedlb.formfield('Nationality:')
+        self.religousfield = customizedlb.formfield('Religous:')
+        self.phonefield = customizedlb.formfield('Phone:')
+        self.emailfield = customizedlb.formfield('Email:')
+        self.mobilefield = customizedlb.formfield('Mobile:')
+        self.birthplacefield = customizedlb.formfield('Birth Place:')
+        #self.zipcodedfield = customizedlb.formfield('Zipcode:')
+
+        # gender_lb = QtGui.QLabel('Gender:')
+        # gender_lb.setStyleSheet('QLabel{background-color : white;}')
+        #
+        # radio1 = QtGui.QRadioButton("Male")
+        # radio2 = QtGui.QRadioButton("Female")
+        # radio1.setChecked(1)
+
+        layout2.addWidget(self.fnamefield)
+        layout2.addWidget(self.fathernamefield)
+        layout2.addWidget(self.nationalityfield)
+
+
+        # gender_layout = QtGui.QHBoxLayout()
+        #
+        # gender_layout.addWidget(gender_lb)
+        # gender_layout.addWidget(radio1)
+        # gender_layout.addWidget(radio2)
+
+        #layout2.addLayout(gender_layout)
+        layout2.addWidget(self.mobilefield)
+        layout2.addWidget(self.birthplacefield)
+
+
+        layout3.addWidget(self.lnamefield)
+        layout3.addWidget(self.shenasnamefield)
+        layout3.addWidget(self.religousfield)
+        layout3.addWidget(self.phonefield)
+        layout3.addWidget(self.emailfield)
+        #layout3.addWidget(zipcodedfield)
+
+
+        # addressfield = customizedlb.formfield('Address:')
+        # addresslayout = QtGui.QHBoxLayout()
+        # addresslayout.addSpacing(10)
+        # addresslayout.addWidget(addressfield)
+        # addresslayout.addSpacing(10)
+        # self.contentbox.addLayout(addresslayout)
+
+        register_btn = QtGui.QPushButton('Register')
+        register_btn.clicked.connect(self.ctrl_handler)
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(register_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+
+
+    def ctrl_handler(self, toolname):
+
+        fname = self.fnamefield.Text()
+        lname = self.lnamefield.Text()
+        father = self.fathernamefield.Text()
+        shenasname = self.shenasnamefield.Text()
+        nationality = self.nationalityfield.Text()
+        religous = self.religousfield.Text()
+        mobile = self.mobilefield.Text()
+        phone = self.mobilefield.Text()
+        birthplace = self.birthplacefield.Text()
+        email = self.emailfield.Text()
+
+        info = [fname, lname, father, shenasname, nationality, religous, mobile, phone, birthplace, email]
+        self.control.prepare_information(info, 1)
+
+
+class ModifyInformation(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+        self.window = ModifyInformationDialog()
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+
+        Search_widget = Search(['First Name', 'Last Name'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(10)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(4)
+        widget.setCentralWidget(self.table)
+        data1 = ['mohammad','mohammad','mohammad','mohammad','mohammad','mohammad','mohammad','mohammad']
+        data2 = ['alavi','sadeghi','bagheri','rezaee','akbari','mahdavi','asgari','javadi']
+        data3 = ['00180907060','00449596979','0083435363','40506070','092340242','234645634','12342534234','124345565']
+
+        self.table.setRowCount(8)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("First Name;Last Name;Shenasname;Remove?").split(";"))
+
+        for i in range(0,8):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i,0,item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i,1,item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i,2,item3)
+            self.button = QtGui.QPushButton('Modify')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i,3,self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+        self.window.show()
+
+
+class ModifyInformationDialog(QtGui.QDialog):
+
+    def __init__(self):
+
+        QtGui.QDialog.__init__(self, parent=None)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+
+        self.setStyleSheet("QDialog { background-color : white}")
+        self.setWindowTitle('Modify Information')
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 10)
+
+        self.section = QtGui.QLabel('Modify Personal Information:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+
+        #self.contentbox.addSpacing(2)
+
+
+        layout123 = QtGui.QHBoxLayout()
+        self.contentbox.addLayout(layout123)
+        layout1 = QtGui.QVBoxLayout()
+        layout1.setContentsMargins(14,0,0,0)
+        layout2 = QtGui.QVBoxLayout()
+        layout1.setContentsMargins(7,0,7,0)
+        layout3 = QtGui.QVBoxLayout()
+        layout3.setContentsMargins(0,0,14,0)
+        layout123.addLayout(layout1)
+        layout123.addLayout(layout2)
+        layout123.addLayout(layout3)
+
+        pic = QtGui.QLabel()
+        pic.setFixedSize(70, 70)
+        pic.setPixmap(QtGui.QPixmap("userpic1.jpg"))
+        layout1.addWidget(pic)
+        layout1.addSpacing(150)
+
+
+        fnamefield = customizedlb.formfield('First Name:')
+        lnamefield = customizedlb.formfield('Last Name:')
+        fathernamefield = customizedlb.formfield("Father's Name:")
+        shenasnamefield = customizedlb.formfield('Shenasname:')
+        nationalityfield = customizedlb.formfield('Nationality:')
+        religousfield = customizedlb.formfield('Religous:')
+        phonefield = customizedlb.formfield('Phone:')
+        emailfield = customizedlb.formfield('Email:')
+        mobilefield = customizedlb.formfield('Mobile:')
+        birthplacefield = customizedlb.formfield('Birth Place:')
+
+        layout2.addWidget(fnamefield)
+        layout2.addWidget(fathernamefield)
+        layout2.addWidget(nationalityfield)
+
+        layout2.addWidget(mobilefield)
+        layout2.addWidget(birthplacefield)
+
+
+        layout3.addWidget(lnamefield)
+        layout3.addWidget(shenasnamefield)
+        layout3.addWidget(religousfield)
+        layout3.addWidget(phonefield)
+        layout3.addWidget(emailfield)
+
+
+        modify_btn = QtGui.QPushButton('Modify')
+        modify_btn.clicked.connect(self.buttonhandler)
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(modify_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+
+    def buttonhandler(self):
+
+        self.close()
+
+
+class RemoveEmployee(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+        self.setContentsMargins(10, 15, 10, 0)
+
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+        # warning = QtGui.QLabel('BE CAREFUL!!!\nThe deleted information CAN NOT be recovered.')
+        #
+        # warning.setStyleSheet('QLabel{background-color : white;}')
+        # font = QtGui.QFont('Arial', 10)
+        # font.setBold(True)
+        # warning.setFont(font)
+        #
+        # self.contentbox.addWidget(warning)
+
+
+        Search_widget = Search(['First Name','Last Name'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(10)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(4)
+        widget.setCentralWidget(self.table)
+        data1 = ['mohammad','mohammad','mohammad','mohammad','mohammad','mohammad','mohammad','mohammad']
+        data2 = ['alavi','sadeghi','bagheri','rezaee','akbari','mahdavi','asgari','javadi']
+        data3 = ['00180907060','00449596979','0083435363','40506070','092340242','234645634','12342534234','124345565']
+
+        self.table.setRowCount(8)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("First Name;Last Name;Shenasname;Remove?").split(";"))
+
+        for i in range(0,8):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i,0,item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i,1,item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i,2,item3)
+            self.button = QtGui.QPushButton('Remove')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i,3,self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+
+class ItemList(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+
+        Search_widget = Search(['Code', 'Name', 'Category', 'Factory'])
+
+        self.contentbox.addWidget(Search_widget)
+
+        self.contentbox.addSpacing(10)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(6)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1005','1006','1007','1008']
+        data2 = ['chips sade','keyek kishmishi','bastani nooni','toon mahi','dogh','shir','moraba havij','rob anar']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','labaniat','moraba','rob']
+        data4 = ['cheetooz','roshd','mihan','pishak','alis','pegah','mosavi','ata']
+        data5 = ['1000','1400','500','1203','9430','232','948','830']
+        data6 = ['14','23','43','25','53','45','73','16']
+
+        self.table.setRowCount(8)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Item Code;Name;category;Factory;Storage#;Market#").split(";"))
+
+        for i in range(0,8):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i,0,item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i,1,item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i,2,item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i,3,item4)
+            item5 = QtGui.QTableWidgetItem(data5[i])
+            self.table.setItem(i,4,item5)
+            item6 = QtGui.QTableWidgetItem(data6[i])
+            self.table.setItem(i,5,item6)
+
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+
+class NewItem(QtGui.QWidget):
+
+     def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 0, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+
+        self.section = QtGui.QLabel('Item Information:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+        layout12 = QtGui.QHBoxLayout()
+        self.contentbox.addLayout(layout12)
+
+        layout1 = QtGui.QVBoxLayout()
+
+        layout2 = QtGui.QVBoxLayout()
+        layout2.setContentsMargins(0,0,14,0)
+
+        layout12.addLayout(layout1)
+        layout12.addLayout(layout2)
+
+
+        codefield = customizedlb.formfield('Code:')
+        namefield = customizedlb.formfield('Name:')
+        categoryfield = customizedlb.formfield('Category:')
+        factoryfield = customizedlb.formfield('Factory:')
+        producefield = customizedlb.formfield('Produce:')
+        expirefield = customizedlb.formfield('Expire:')
+        numberfield = customizedlb.formfield('Number:')
+        shelffield = customizedlb.formfield('Shelf:')
+
+        layout1.addWidget(codefield)
+        layout1.addWidget(categoryfield)
+        layout1.addWidget(producefield)
+        layout1.addWidget(numberfield)
+
+
+
+        layout2.addWidget(namefield)
+        layout2.addWidget(factoryfield)
+        layout2.addWidget(expirefield)
+        layout2.addWidget(shelffield)
+
+
+        add_btn = QtGui.QPushButton('Add to Items')
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(add_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+        self.contentbox.addSpacing(100)
+
+
+class ModifyItem(QtGui.QWidget):
+
+    def __init__(self):
+
+        self.window = ModifyItemDialog()
+
+        QtGui.QWidget.__init__(self, parent=None)
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(10)
+
+        Search_widget = Search(['Code', 'Name', 'Category', 'Factory'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(15)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(5)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1006','1007']
+        data2 = ['chips sade','keyek kishmishi','bastani nooni','toon mahi','shir','moraba havij']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','moraba']
+        data4 = ['cheetooz','roshd','mihan','pishak','pegah','mosavi']
+
+        self.table.setRowCount(6)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Factory;Remove?").split(";"))
+
+        for i in range(0,6):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i,0,item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i,1,item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i,2,item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i,3,item4)
+            self.button = QtGui.QPushButton('Modify')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i,4,self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+        self.window.show()
+
+
+class ModifyItemDialog(QtGui.QDialog):
+
+    def __init__(self):
+
+        QtGui.QDialog.__init__(self, parent=None)
+        self.setStyleSheet("QDialog { background-color : white}")
+        self.setWindowTitle('Modify Item')
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 35, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+        self.contentbox.addSpacing(15)
+
+        self.setStyleSheet("QDialog { background-color : white}")
+        self.setWindowTitle('Modify Information')
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 10)
+
+        self.section = QtGui.QLabel('Modify Items Information:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(15)
+
+        layout12 = QtGui.QHBoxLayout()
+        self.contentbox.addLayout(layout12)
+
+        layout1 = QtGui.QVBoxLayout()
+
+        layout2 = QtGui.QVBoxLayout()
+        layout2.setContentsMargins(0,0,14,0)
+
+        layout12.addLayout(layout1)
+        layout12.addLayout(layout2)
+
+
+        codefield = customizedlb.formfield('Code:')
+        namefield = customizedlb.formfield('Name:')
+        categoryfield = customizedlb.formfield('Category:')
+        factoryfield = customizedlb.formfield('Factory:')
+        producefield = customizedlb.formfield('Produce:')
+        expirefield = customizedlb.formfield('Expire:')
+        numberfield = customizedlb.formfield('Number:')
+        shelffield = customizedlb.formfield('Shelf:')
+
+        layout1.addWidget(codefield)
+        layout1.addWidget(categoryfield)
+        layout1.addWidget(producefield)
+        layout1.addWidget(numberfield)
+
+
+
+        layout2.addWidget(namefield)
+        layout2.addWidget(factoryfield)
+        layout2.addWidget(expirefield)
+        layout2.addWidget(shelffield)
+
+
+        modify_btn = QtGui.QPushButton('Modify')
+        modify_btn.clicked.connect(self.buttonhandler)
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(modify_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+        self.contentbox.addSpacing(100)
+
+    def buttonhandler(self):
+
+        self.close()
+
+
+class RemoveItem(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+
+        Search_widget = Search(['Code', 'Name', 'Category', 'Factory'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(10)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(5)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1006','1007']
+        data2 = ['chips sade','keyek kishmishi','bastani nooni','toon mahi','shir','moraba havij']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','moraba']
+        data4 = ['cheetooz','roshd','mihan','pishak','pegah','mosavi']
+
+        self.table.setRowCount(6)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Factory;Remove?").split(";"))
+
+        for i in range(0,6):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i,0,item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i,1,item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i,2,item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i,3,item4)
+            self.button = QtGui.QPushButton('Remove')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i,4,self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+
+class NewOrder(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.window = NewOrderDialog()
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(20)
+
+        Search_widget = Search(['Code', 'Name', 'Category', 'Factory', 'Less than'])
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(15)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(6)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1006','1007']
+        data2 = ['chips sade','keyek kishmishi','bastani nooni','toon mahi','shir','moraba havij']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','moraba']
+        data4 = ['cheetooz','roshd','mihan','pishak','pegah','mosavi']
+        data5 = ['200', '340', '530', '120', '53', '149']
+
+        self.table.setRowCount(6)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Factory;Storage#;Order?").split(";"))
+
+        for i in range(0,6):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i, 0, item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i, 1, item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i, 2, item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i, 3, item4)
+            item5 = QtGui.QTableWidgetItem(data5[i])
+            self.table.setItem(i, 4, item5)
+            self.button = QtGui.QPushButton('Order')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i, 5, self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+        self.window.show()
+
+
+class NewOrderDialog(QtGui.QDialog):
+
+
+    def __init__(self):
+
+        QtGui.QDialog.__init__(self, parent=None)
+        self.setFixedSize(600, 400)
+        self.setStyleSheet("QDialog { background-color : white}")
+        self.setWindowTitle('New Order')
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+        self.contentbox.addSpacing(15)
+
+
+        self.section = QtGui.QLabel('Register a New Order:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 12)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator1 = QtGui.QLabel('')
+        seperator1.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator1)
+        seperator1.setFrameStyle(QtGui.QFrame.HLine)
+        seperator1.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(15)
+
+        item_description = QtGui.QLabel()
+        item_description.setTextFormat(QtCore.Qt.RichText)
+        item_description.setText("<font size=4><b>Item Description:</b></font><br>""<br>""&nbsp; &nbsp; <b>Code:</b> %s &nbsp;&nbsp; <b>Name:</b> %s &nbsp;&nbsp; <b>Category:</b> %s &nbsp;&nbsp; <b>Factory:</b> %s &nbsp;&nbsp; <b>Storage#:</b> %s"%('1001','bastani nooni','bastani','mihan','143'))
+        self.contentbox.addWidget(item_description)
+
+        self.contentbox.addSpacing(15)
+
+        factory_information = QtGui.QLabel()
+        factory_information.setTextFormat(QtCore.Qt.RichText)
+        factory_information.setText("<font size=4><b>Factory Phone:</b></font><br>""<br>""&nbsp; &nbsp; <b>Phone:</b> %s &nbsp;&nbsp; <b>Phone:</b> %s &nbsp;&nbsp; <b>Fax:</b> %s "%('55741866','55731964','55718831'))
+        self.contentbox.addWidget(factory_information)
+
+        self.contentbox.addSpacing(15)
+
+        seperator2 = QtGui.QLabel('')
+        seperator2.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator2)
+        seperator2.setFrameStyle(QtGui.QFrame.HLine)
+        seperator2.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(15)
+
+        hbox = QtGui.QHBoxLayout()
+
+        numberfield = customizedlb.formfield('The Number of Ordered Item:')
+        hbox.addWidget(numberfield)
+
+        cal_layout = QtGui.QHBoxLayout()
+
+        order_date_lb = QtGui.QLabel('Order Date:')
+        cal_layout.addWidget(order_date_lb)
+
+        cal = Calendar()
+        cal_layout.addWidget(cal)
+
+        hbox.addLayout(cal_layout)
+
+        self.contentbox.addLayout(hbox)
+
+        #self.contentbox.addSpacing(15)
+
+        modify_btn = QtGui.QPushButton('Register Order')
+        modify_btn.clicked.connect(self.buttonhandler)
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(modify_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+        self.contentbox.addSpacing(100)
+
+
+
+    def buttonhandler(self):
+
+        self.close()
+
+
+class ModifyOrder(QtGui.QWidget):
+
+    def __init__(self):
+
+        self.window = ModifyOrderDialog()
+
+        QtGui.QWidget.__init__(self, parent=None)
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(10)
+
+        Search_widget = Search(['Code', 'Name', 'Category', 'Factory','Order Date'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(15)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(6)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1006','1007']
+        data2 = ['chips sade','keyek kishmishi','bastani nooni','toon mahi','shir','moraba havij']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','moraba']
+        data4 = ['cheetooz','roshd','mihan','pishak','pegah','mosavi']
+        data5 = ['7/1/2015','2/11/2011','13/2/2013','1/2/2012','17/2/2014','7/4/2015']
+
+        self.table.setRowCount(6)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Factory;Order Date;Modify?").split(";"))
+
+        for i in range(0,6):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i, 0, item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i, 1, item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i, 2, item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i, 3, item4)
+            item5 = QtGui.QTableWidgetItem(data5[i])
+            self.table.setItem(i, 4, item5)
+            self.button = QtGui.QPushButton('Modify')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i, 5, self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+        self.window.show()
+
+
+class ModifyOrderDialog(QtGui.QDialog):
+
+    def __init__(self):
+
+        QtGui.QDialog.__init__(self, parent=None)
+        self.setFixedSize(600, 400)
+        self.setStyleSheet("QDialog { background-color : white}")
+        self.setWindowTitle('Modify Order')
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+        self.contentbox.addSpacing(15)
+
+
+        self.section = QtGui.QLabel('Modify an Order:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 12)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator1 = QtGui.QLabel('')
+        seperator1.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator1)
+        seperator1.setFrameStyle(QtGui.QFrame.HLine)
+        seperator1.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(15)
+
+        item_description = QtGui.QLabel()
+        item_description.setTextFormat(QtCore.Qt.RichText)
+        item_description.setText("<font size=4><b>Item Description:</b></font><br>""<br>""&nbsp; &nbsp; <b>Code:</b> %s &nbsp;&nbsp; <b>Name:</b> %s &nbsp;&nbsp; <b>Category:</b> %s &nbsp;&nbsp; <b>Factory:</b> %s &nbsp;&nbsp; <b>Storage#:</b> %s"%('1001','bastani nooni','bastani','mihan','143'))
+        self.contentbox.addWidget(item_description)
+
+        self.contentbox.addSpacing(15)
+
+        factory_information = QtGui.QLabel()
+        factory_information.setTextFormat(QtCore.Qt.RichText)
+        factory_information.setText("<font size=4><b>Factory Phone:</b></font><br>""<br>""&nbsp; &nbsp; <b>Phone:</b> %s &nbsp;&nbsp; <b>Phone:</b> %s &nbsp;&nbsp; <b>Fax:</b> %s "%('55741866','55731964','55718831'))
+        self.contentbox.addWidget(factory_information)
+
+        self.contentbox.addSpacing(15)
+
+        seperator2 = QtGui.QLabel('')
+        seperator2.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator2)
+        seperator2.setFrameStyle(QtGui.QFrame.HLine)
+        seperator2.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(15)
+
+        hbox1 = QtGui.QHBoxLayout()
+
+        numberfield = customizedlb.formfield('The Number of Ordered Item:')
+        hbox1.addWidget(numberfield)
+
+        cal_layout = QtGui.QHBoxLayout()
+
+        order_date_lb = QtGui.QLabel('Order Date:')
+        cal_layout.addWidget(order_date_lb)
+
+        cal = Calendar()
+        cal_layout.addWidget(cal)
+
+        hbox1.addLayout(cal_layout)
+
+        self.contentbox.addLayout(hbox1)
+
+        hbox2 = QtGui.QHBoxLayout()
+
+        status_lb = QtGui.QLabel('Status:')
+        hbox2.addWidget(status_lb)
+
+        order_status_combo_box = QtGui.QComboBox()
+        order_status_combo_box.addItem('Ordered')
+        order_status_combo_box.addItem('Delivered')
+        hbox2.addWidget(order_status_combo_box)
+
+        hbox2.setContentsMargins(10, 0, 450, 0)
+
+        self.contentbox.addLayout(hbox2)
+
+        self.contentbox.addSpacing(15)
+
+        modify_btn = QtGui.QPushButton('Modify')
+        modify_btn.clicked.connect(self.buttonhandler)
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(modify_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+        self.contentbox.addSpacing(100)
+
+
+
+    def buttonhandler(self):
+
+        self.close()
+
+
+class OrderStatus(QtGui.QWidget):
+
+    def __init__(self):
+
+
+        QtGui.QWidget.__init__(self, parent=None)
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(10)
+
+
+        Search_widget = Search(['Code', 'Name', 'Category', 'Factory', 'Order Date', 'More than'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(15)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(7)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1006','1007']
+        data2 = ['chips sade','keyek kishmishi','bastani nooni','toon mahi','shir','moraba havij']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','moraba']
+        data4 = ['cheetooz','roshd','mihan','pishak','pegah','mosavi']
+        data5 = ['7/1/2015','2/11/2011','13/2/2013','1/2/2012','17/2/2014','7/4/2015']
+        data6 = ['12','11','3','1','23','7']
+
+        self.table.setRowCount(6)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Factory;Order Date;Passed Days;Cancel?").split(";"))
+
+        for i in range(0, 6):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i, 0, item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i, 1, item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i, 2, item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i, 3, item4)
+            item5 = QtGui.QTableWidgetItem(data5[i])
+            self.table.setItem(i, 4, item5)
+            item6 = QtGui.QTableWidgetItem(data6[i])
+            self.table.setItem(i, 5, item6)
+            self.button = QtGui.QPushButton('Cancel')
+            self.button.clicked.connect(self.cancelDialog)
+            self.table.setCellWidget(i, 6, self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def cancelDialog(self):
+
+        msgbox = QtGui.QMessageBox()
+        msgbox.setStyleSheet("QMessageBox { background-color : white}")
+        reply = QtGui.QMessageBox.question(msgbox, 'Message',
+             "Do you want to cancel order?", QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+        if reply == QtGui.QMessageBox.Yes:
+            self.handleButtonClicked()
+
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+        print 'This is where the cancel action takes place'
+
+
+class ProducerList(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+
+        Search_widget = Search(['Code', 'Name', 'Category'])
+
+        self.contentbox.addWidget(Search_widget)
+
+        self.contentbox.addSpacing(10)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(4)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1005','1006','1007','1008']
+        data2 = ['cheetooz','roshd','mihan','pishak','alis','pegah','mosavi','ata']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','labaniat','moraba','rob']
+        data4 = ['55565758','60708090','21222324','31323334','45556575','90807060','1122334455','87868584']
+
+        self.table.setRowCount(8)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Phone").split(";"))
+
+        for i in range(0,8):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i,0,item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i,1,item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i,2,item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i,3,item4)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+
+class NewProducer(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 0, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+
+        self.section = QtGui.QLabel('Producer Information:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+        layout12 = QtGui.QHBoxLayout()
+        self.contentbox.addLayout(layout12)
+
+        layout1 = QtGui.QVBoxLayout()
+
+        layout2 = QtGui.QVBoxLayout()
+        layout2.setContentsMargins(0,0,14,0)
+
+        layout12.addLayout(layout1)
+        layout12.addLayout(layout2)
+
+
+        codefield = customizedlb.formfield('Code:')
+        namefield = customizedlb.formfield('Factory Name:')
+        categoryfield = customizedlb.formfield('Category:')
+        faxfield = customizedlb.formfield('Fax:')
+        phone1field = customizedlb.formfield('Phone 1:')
+        phone2field = customizedlb.formfield('Phone 2:')
+
+
+        layout1.addWidget(codefield)
+        layout1.addWidget(categoryfield)
+        layout1.addWidget(phone1field)
+
+        layout2.addWidget(namefield)
+        layout2.addWidget(faxfield)
+        layout2.addWidget(phone2field)
+
+
+        add_btn = QtGui.QPushButton('Add to Producers')
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(add_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+        self.contentbox.addSpacing(100)
+
+
+class ModifyProducer(QtGui.QWidget):
+
+    def __init__(self):
+
+        self.window = ModifyProducerDialog()
+
+        QtGui.QWidget.__init__(self, parent=None)
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(10)
+
+        Search_widget = Search(['Code', 'Name', 'Category'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(15)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(5)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1005','1006','1007','1008']
+        data2 = ['cheetooz','roshd','mihan','pishak','alis','pegah','mosavi','ata']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','labaniat','moraba','rob']
+        data4 = ['55565758','60708090','21222324','31323334','45556575','90807060','1122334455','87868584']
+
+
+        self.table.setRowCount(6)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Phone;Modify?").split(";"))
+
+        for i in range(0,6):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i, 0, item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i, 1, item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i, 2, item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i, 3, item4)
+            self.button = QtGui.QPushButton('Modify')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i, 4, self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+        self.window.show()
+
+
+class ModifyProducerDialog(QtGui.QDialog):
+
+    def __init__(self):
+
+        QtGui.QDialog.__init__(self, parent=None)
+        self.setFixedSize(500, 400)
+        self.setStyleSheet("QDialog { background-color : white}")
+        self.setWindowTitle('Modify Producer')
+        #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
+        self.setContentsMargins(10, 15, 10, 0)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.setLayout(self.contentbox)
+        self.contentbox.setMargin(0)
+
+        self.contentbox.addSpacing(15)
+
+
+        self.section = QtGui.QLabel('Modify a Producer:')
+        self.section.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 12)
+        font.setBold(True)
+        self.section.setFont(font)
+
+        self.contentbox.addWidget(self.section)
+
+        seperator1 = QtGui.QLabel('')
+        seperator1.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator1)
+        seperator1.setFrameStyle(QtGui.QFrame.HLine)
+        seperator1.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(15)
+
+        layout12 = QtGui.QHBoxLayout()
+        self.contentbox.addLayout(layout12)
+
+        layout1 = QtGui.QVBoxLayout()
+
+        layout2 = QtGui.QVBoxLayout()
+        layout2.setContentsMargins(0,0,14,0)
+
+        layout12.addLayout(layout1)
+        layout12.addLayout(layout2)
+
+
+        codefield = customizedlb.formfield('Code:')
+        namefield = customizedlb.formfield('Factory Name:')
+        categoryfield = customizedlb.formfield('Category:')
+        faxfield = customizedlb.formfield('Fax:')
+        phone1field = customizedlb.formfield('Phone 1:')
+        phone2field = customizedlb.formfield('Phone 2:')
+
+
+        layout1.addWidget(codefield)
+        layout1.addWidget(categoryfield)
+        layout1.addWidget(phone1field)
+
+        layout2.addWidget(namefield)
+        layout2.addWidget(faxfield)
+        layout2.addWidget(phone2field)
+
+        self.contentbox.addSpacing(25)
+
+        modify_btn = QtGui.QPushButton('Modify')
+        modify_btn.clicked.connect(self.buttonhandler)
+        btnlayout = QtGui.QHBoxLayout()
+        btnlayout.addSpacing(250)
+        btnlayout.addWidget(modify_btn)
+        btnlayout.addSpacing(250)
+        self.contentbox.addLayout(btnlayout)
+        self.contentbox.addSpacing(100)
+
+    def buttonhandler(self):
+
+        self.close()
+
+
+class RemoveProducer(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+
+        Search_widget = Search(['Code', 'Name', 'Category'])
+
+        self.contentbox.addWidget(Search_widget)
+        self.contentbox.addSpacing(15)
+
+        widget = QtGui.QMainWindow()
+        self.contentbox.addWidget(widget)
+        self.table = QtGui.QTableWidget()
+        self.table.setColumnCount(5)
+        widget.setCentralWidget(self.table)
+        data1 = ['1001','1002','1003','1004','1005','1006','1007','1008']
+        data2 = ['cheetooz','roshd','mihan','pishak','alis','pegah','mosavi','ata']
+        data3 = ['chips','keyk','bastani','konserv','labaniat','labaniat','moraba','rob']
+        data4 = ['55565758','60708090','21222324','31323334','45556575','90807060','1122334455','87868584']
+
+
+        self.table.setRowCount(6)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(QtCore.QString("Code;Name;Category;Phone;Remove?").split(";"))
+
+        for i in range(0,6):
+            item1 = QtGui.QTableWidgetItem(data1[i])
+            self.table.setItem(i, 0, item1)
+            item2 = QtGui.QTableWidgetItem(data2[i])
+            self.table.setItem(i, 1, item2)
+            item3 = QtGui.QTableWidgetItem(data3[i])
+            self.table.setItem(i, 2, item3)
+            item4 = QtGui.QTableWidgetItem(data4[i])
+            self.table.setItem(i, 3, item4)
+            self.button = QtGui.QPushButton('Remove')
+            self.button.clicked.connect(self.handleButtonClicked)
+            self.table.setCellWidget(i, 4, self.button)
+
+
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+    def handleButtonClicked(self):
+        button = QtGui.qApp.focusWidget()
+        # or button = self.sender()
+        index = self.table.indexAt(button.pos())
+        if index.isValid():
+            print(index.row(), index.column())
+
+
+class SMSInfo(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+
+        title = QtGui.QLabel('General Description:')
+        title.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 12)
+        font.setBold(True)
+        title.setFont(font)
+
+        self.contentbox.addWidget(title)
+
+        generaldescription = QtGui.QLabel('This Program is developed as the System Analysis and Design project.\nDevelopers are Mohamamad Mehdi Jazirian and Mehran Memarnejad.' )
+        generaldescription.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        generaldescription.setFont(font)
+
+        self.contentbox.addWidget(generaldescription)
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(10)
+
+        title2 = QtGui.QLabel('Course Details:')
+        title2.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 12)
+        font.setBold(True)
+        title2.setFont(font)
+
+        self.contentbox.addWidget(title2)
+
+        coursedetail = QtGui.QLabel('Professor: Dr.Parsa\nTeacher Assistant: Mehrdad Saffarie and Vahid Kharazi\nIran University of Science and Technology (IUST),Spring 1394' )
+        coursedetail.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        coursedetail.setFont(font)
+
+        self.contentbox.addWidget(coursedetail)
+        self.contentbox.addSpacing(70)
+
+
