@@ -25,8 +25,8 @@ class Client():
         else:
             return self.res
         
-y=Client()
-y.send([[""]])
+#y=Client()
+#y.send([[""]])
 
-print type(y.get()[0])
-print y.get()
+#print type(y.get()[0])
+#print y.get()
