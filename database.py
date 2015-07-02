@@ -1,39 +1,171 @@
-import SocketServer,socket
+__author__ = 'mehdi'
 
-ip="127.0.0.1"
-port=9999
+import pyodbc
+cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=MMJAZ;DATABASE=StoreManagement;UID=test;PWD=jaziryan')
+cursor = cnxn.cursor()
 
-def client(ip, port, message):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((ip, port))
+#Insert:
+def insertIntoEmployee(k):
     try:
-        sock.sendall(bytes(message))
-        response = str(sock.recv(1024))
-        print("Received: {}".format(response))
+        cursor.execute("INSERT INTO Employee(FName,LName,FathersName,Shenasname,Nationality,Religous,Mobile,Phone,BirthPlace,Email) VALUES(?,?,?,?,?,?,?,?,?,?)",k)
+    except Exception,e:
+        '''a= 'DB exception: %s' % e'''
+        return 'UnSuccessfull'
+    else:
+        return 'Successfull'
     finally:
-        sock.close()
+        cnxn.commit()
 
-client(ip,port,"[[600,'abc','c',5],1]")
-'''
+def insertIntoKala(k):
+    try:
+        cursor.execute("INSERT INTO Kala(code,name,category,factory,produce,expire,number,shelf,price) VALUES(?,?,?,?,?,?,?,?,?)",k)
+    except Exception,e:
+        return 'UnSuccessfull'
+    else:
+        return 'Successfull'
+    finally:
+        cnxn.commit()
+
+def insertIntoProducer(k):
+    try:
+        cursor.execute("INSERT INTO Producer(code,Factoryname,category,fax,phone,phone2) VALUES(?,?,?,?,?,?)",k)
+    except Exception,e:
+        return 'UnSuccessfull'
+    else:
+        return 'Successfull'
+    finally:
+        cnxn.commit()
+
+def insertIntoOrder(k):
+    try:
+        cursor.execute("INSERT INTO Order(code,name,number,date,status) VALUES(?,?,?,?,?)",k)
+    except Exception,e:
+        return 'UnSuccessfull'
+    else:
+        return 'Successfull'
+    finally:
+        cnxn.commit()
 
 
-while 1:
-    
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
-    sock.connect((ip, port))
-    message = raw_input("press : ")
-    if message=="":
-	    sock.close()
-    sock.sendall(bytes(message))
-    response = str(sock.recv(1024))
-    print("Received: {}".format(response))
-    sock.close()
+#Update:
+def updateEmployee(k):
+    cursor.execute("UPDATE Employee SET FName=?,LName=?,FathersName=?,Shenasname=?,Nationality=?,Religous=?,Mobile=?,Phone=?,BirthPlace=?,Email=? WHERE id=(?)",(k[1],k[2],k[3],k[4],k[5],k[6],k[7],k[8],k[9],k[10],k[0]))
+    cnxn.commit()
 
-'''
-	
-'''try:
-    sock.sendall(bytes(message))
-    response = str(sock.recv(1024))
-    print("Received: {}".format(response))'''
+def updateKala(k):
+    cursor.execute("UPDATE Kala SET code=?,name=(?),category=?,factory=?,produce=?,expire=?,number=?,shelf=?,price=? WHERE id=(?)",(k[1],k[2],k[3],k[4],k[5],k[6],k[7],k[8],k[9],k[0]))
+    cnxn.commit()
+
+def updateProducer(k):
+    cursor.execute("UPDATE Producer SET code=?,Factoryname=?,category=?,fax=?,phone=?,phone2=(?) WHERE id=(?)",(k[1],k[2],k[3],k[4],k[5],k[6],k[0]))
+    cnxn.commit()
+
+def updateOrder(k):
+    cursor.execute("UPDATE Order SET code=?,name=?,number=?,date=?,status=? WHERE id=(?)",(k[1],k[2],k[3],k[4],k[5],k[0]))
+    cnxn.commit()
+
+
+
+
+#Delete:
+def deleteEmployee(k):
+    cursor.execute("DELETE FROM Employee WHERE id=(?)",k[0])
+    cnxn.commit()
+#8:
+def deleteKala(k):
+    cursor.execute("DELETE FROM Kala WHERE code=(?)",k[0])
+    cnxn.commit()
+
+def deleteProducer(k):
+    cursor.execute("DELETE FROM Producer WHERE id=(?)",k[0])
+    cnxn.commit()
+
+def deleteOrder(k):
+    cursor.execute("DELETE FROM Order WHERE id=(?)",k[0])
+    cnxn.commit()
+
+
+
+
+#Search of Employee:
+def searchAllEmployee():
+    cursor.execute("select * from Employee")
+    row = cursor.fetchall()
+    return row
+
+def searchByNameEmployee(k):
+    cursor.execute("select * from Employee where FName=(?) ",k[0])
+    row = cursor.fetchall()
+    return row
+
+def searchByLNameEmployee(k):
+    cursor.execute("select * from Employee where LName=(?) ",k[0])
+    row = cursor.fetchall()
+    return row
+
+
+
+#Search of Kala:
+def searchKala():
+    cursor.execute("select * from Kala")
+    row = cursor.fetchall()
+    return row
+
+def searchByCodeKala(k):
+    cursor.execute("select * from Kala where code=(?)",k[0])
+    row = cursor.fetchall()
+    return row
+
+def searchByNameKala(k):
+    cursor.execute("select * from Kala where name=(?)",k[0])
+    row = cursor.fetchall()
+    return row
+
+def searchByNumberKala():
+    cursor.execute("select * from Kala where number<50")
+    row = cursor.fetchall()
+    return row
+
+def searchByCategoryKala(k):
+    cursor.execute("select * from Kala where Category=(?)",k[0])
+    row = cursor.fetchall()
+    return row
+
+
+#Search of Producer:
+def searchProducer():
+    cursor.execute("select * from Producer")
+    row = cursor.fetchall()
+    return row
+
+def searchByCodeProducer(k):
+    cursor.execute("select * from Producer where code=(?)",k[0])
+    row = cursor.fetchall()
+    return row
+
+def searchByNameProducer(k):
+    cursor.execute("select * from Producer where Factoryname=(?)",k[0])
+    row = cursor.fetchall()
+    return row
+
+
+
+#Search Order:
+def searchOrder():
+    cursor.execute("select * from Order")
+    row = cursor.fetchall()
+    return row
+
+def searchByCodeOrder(k):
+    cursor.execute("select * from Order where code=(?)",k[0])
+    row = cursor.fetchall()
+    return row
+
+def searchByNameOrder(k):
+    cursor.execute("select * from Order where Factoryname=(?)",k[0])
+    row = cursor.fetchall()
+    return row
+
+
