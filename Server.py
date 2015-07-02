@@ -3,7 +3,7 @@ import threading
 import SocketServer
 import ast
 
-import dbtest
+import database
 class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
     def handle(self):
