@@ -3,6 +3,7 @@
 
 from PyQt4 import QtCore,QtGui
 from functools import partial
+import os
 import customizedlb
 from control import Controller
 
@@ -29,7 +30,7 @@ class Search(QtGui.QWidget):
 
 
         self.Search_entry = QtGui.QLineEdit()
-
+        self.Search_entry.returnPressed.connect(self.buttonhandler)
         self.Search_btn = QtGui.QPushButton('Search')
         self.Search_btn.clicked.connect(self.buttonhandler)
 
@@ -45,7 +46,13 @@ class Search(QtGui.QWidget):
     def buttonhandler(self):
 
         selected = str(self.Search_combo_box.currentText())
-        control.prepare_information([str(self.Search_entry.text())],'searchBy%s%sSQL'%(selected,self.table))
+        searchText = str(self.Search_entry.text())
+
+        if len(searchText) != 0:
+            control.prepare_information([searchText],'searchBy%s%sSQL'%(selected,self.table))
+        else:
+            control.prepare_information([], 'searchAllEmployeeSQL')
+
         self.result = control.get()
         self.data_rec_sgnl.emit()
 
@@ -286,6 +293,7 @@ class ModifyInformation(QtGui.QWidget):
 
 
         self.window = ModifyInformationDialog()
+        self.window.modification_sgnl.connect(self.refresh)
         #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
         self.setContentsMargins(10, 15, 10, 0)
 
@@ -294,9 +302,8 @@ class ModifyInformation(QtGui.QWidget):
         self.setLayout(self.contentbox)
         self.contentbox.addSpacing(10)
 
-        self.Search_widget = Search(['First Name', 'Last Name'],'Employee')
+        self.Search_widget = Search(['First Name', 'Last Name'], 'Employee')
         self.Search_widget.data_rec_sgnl.connect(self.get_search_result)
-
 
 
         self.contentbox.addWidget(self.Search_widget)
@@ -309,43 +316,44 @@ class ModifyInformation(QtGui.QWidget):
         self.table.setColumnCount(4)
         widget.setCentralWidget(self.table)
 
-
-        # data2 = ['alavi','sadeghi','bagheri','rezaee','akbari','mahdavi','asgari','javadi']
-        # data3 = ['00180907060','00449596979','0083435363','40506070','092340242','234645634','12342534234','124345565']
-
-
         self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.table.setHorizontalHeaderLabels(QtCore.QString("First Name;Last Name;Shenasname;Modify?").split(";"))
 
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
 
-
     def handleButtonClicked(self):
+
+        """This function opens modification window to modify information."""
+
         button = QtGui.qApp.focusWidget()
         # or button = self.sender()
-        index = self.table.indexAt(button.pos())
-        if index.isValid():
-            print(index.row(), index.column())
+        self.index = self.table.indexAt(button.pos()).row()
 
+        #if index.isValid():
+         #   print(index.row(), index.column())
+        self.window.intialInformation(self.search_res[self.index])
         self.window.show()
 
     def get_search_result(self):
 
-        search_res = self.Search_widget.searchResult()
+        """This function fulfill the table with search result."""
 
+        self.search_res = self.Search_widget.searchResult()
 
-        row_number = len(search_res)
-        print type(search_res[0])
+        print self.search_res
+        row_number = len(self.search_res)
+        #print type(self.search_res[0])
         print row_number
 
         self.table.setRowCount(row_number)
 
         for i in range(row_number):
-            item1 = QtGui.QTableWidgetItem(search_res[i][1])
+
+            item1 = QtGui.QTableWidgetItem(self.search_res[i][1])
             self.table.setItem(i, 0, item1)
-            item2 = QtGui.QTableWidgetItem(search_res[i][2])
+            item2 = QtGui.QTableWidgetItem(self.search_res[i][2])
             self.table.setItem(i, 1, item2)
-            item3 = QtGui.QTableWidgetItem(str(search_res[i][4]))
+            item3 = QtGui.QTableWidgetItem(str(self.search_res[i][4]))
             self.table.setItem(i, 2, item3)
 
 
@@ -353,8 +361,27 @@ class ModifyInformation(QtGui.QWidget):
             self.button.clicked.connect(self.handleButtonClicked)
             self.table.setCellWidget(i, 3, self.button)
 
+    def refresh(self):
+
+        """This Function refresh the list of employee in modification page to have new information."""
+
+        #print 'here is refresh'
+        new = self.window.update_search()
+        self.search_res = list(self.search_res)
+
+        #print self.search_res
+        self.search_res.pop(self.index)
+        #print self.search_res
+        #print type(self.search_res)
+        self.search_res.insert(self.index, new)
+        #self.search_res.insert(self.index, new)
+        self.search_res = tuple(self.search_res)
+
 
 class ModifyInformationDialog(QtGui.QDialog):
+
+    # signal to update modify page to have new information after modification
+    modification_sgnl = QtCore.pyqtSignal()
 
     def __init__(self):
 
@@ -408,6 +435,7 @@ class ModifyInformationDialog(QtGui.QDialog):
 
 
         self.fnamefield = customizedlb.formfield("First Name<font color='red'>*</font>:")
+
         self.fnamefield.formfield_enterPressed.connect(self.buttonhandler)
         self.lnamefield = customizedlb.formfield("Last Name<font color='red'>*</font>:")
         self.lnamefield.formfield_enterPressed.connect(self.buttonhandler)
@@ -452,9 +480,23 @@ class ModifyInformationDialog(QtGui.QDialog):
         btnlayout.addSpacing(250)
         self.contentbox.addLayout(btnlayout)
 
+    def intialInformation(self, infolist):
+
+        self.infolist = infolist
+        self.fnamefield.setText(infolist[1])
+        self.lnamefield.setText(infolist[2])
+        self.fathernamefield.setText(infolist[3])
+        self.shenasnamefield.setText(infolist[4])
+        self.nationalityfield.setText(infolist[5])
+        self.religousfield.setText(infolist[6])
+        self.mobilefield.setText(infolist[7])
+        self.phonefield.setText(infolist[8])
+        self.birthplacefield.setText(infolist[9])
+        self.emailfield.setText(infolist[10])
+
     def buttonhandler(self):
 
-        check_list = [self.fnamefield,self.lnamefield,self.shenasnamefield,self.phonefield]
+        check_list = [self.fnamefield, self.lnamefield, self.shenasnamefield, self.phonefield]
 
         flag = True
 
@@ -484,9 +526,14 @@ class ModifyInformationDialog(QtGui.QDialog):
 
         ####Send to controller
         if flag:
-            info = [fname, lname, father, shenasname, nationality, religous, mobile, phone, birthplace, email]
-            control.prepare_information(info, 1)
+            self.newinfo = [self.infolist[0], fname, lname, father, shenasname, nationality, religous, mobile, phone, birthplace, email]
+            control.prepare_information(self.newinfo, 'modifyEmployeeSQL')
+            self.modification_sgnl.emit()
             self.close()
+
+    def update_search(self):
+
+        return tuple(self.newinfo)
 
 
 class RemoveEmployee(QtGui.QWidget):
@@ -1747,7 +1794,7 @@ class ModifyProducerDialog(QtGui.QDialog):
 
         QtGui.QDialog.__init__(self, parent=None)
         self.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.setFixedSize(500, 400)
+        self.setFixedSize(500, 300)
         self.setStyleSheet("QDialog { background-color : white}")
         self.setWindowTitle('Modify Producer')
         #self.setStyleSheet("margin:5px; border:1px solid rgb(0, 255, 0);")
@@ -1819,7 +1866,7 @@ class ModifyProducerDialog(QtGui.QDialog):
         btnlayout.addWidget(modify_btn)
         btnlayout.addSpacing(250)
         self.contentbox.addLayout(btnlayout)
-        self.contentbox.addSpacing(100)
+        self.contentbox.addSpacing(30)
 
     def ctrl_handler(self):
 
@@ -2395,7 +2442,7 @@ class ProductActivation(QtGui.QWidget):
 
         self.section = QtGui.QLabel('Product Activation:')
         self.section.setStyleSheet('QLabel{background-color : white;}')
-        font = QtGui.QFont('Arial', 9)
+        font = QtGui.QFont('Arial', 10)
         font.setBold(True)
         self.section.setFont(font)
 
@@ -2436,6 +2483,149 @@ class ProductActivation(QtGui.QWidget):
         print 'Activate product'
 
 
+class UpdateProduct(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(60, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+
+        title = QtGui.QLabel('Update Product:')
+        title.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 10)
+        font.setBold(True)
+        title.setFont(font)
+
+        self.contentbox.addWidget(title)
+
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(10)
+
+        hbox = QtGui.QHBoxLayout()
+
+        self.isUpdate_lb = QtGui.QLabel()
+        self.isUpdate_lb.setStyleSheet('QLabel{background-color : white;}')
+        self.isUpdate_icn = QtGui.QPixmap('%s\Pics\\b4Update.png'%os.getcwd())
+        #icn_pic = icn_pic.scaled(icn_lb.size(), QtCore.Qt.KeepAspectRatio)
+        self.isUpdate_lb.setPixmap(self.isUpdate_icn)
+
+        hbox.addWidget(self.isUpdate_lb)
+
+        vbox = QtGui.QVBoxLayout()
+
+        update_lb = QtGui.QLabel('<b>Product update:</b>')
+        update_lb.setStyleSheet('QLabel{background-color : white;}')
+        vbox.addWidget(update_lb)
+
+        version_lb = QtGui.QLabel('Installed version : 1.1')
+        version_lb.setStyleSheet('QLabel{background-color : white;}')
+        vbox.addWidget(version_lb)
+
+        hbox.addLayout(vbox)
+
+        hbox.addSpacing(70)
+        update_btn = QtGui.QPushButton('Update')
+        update_btn.clicked.connect(self.buttonhandler)
+        hbox.addWidget(update_btn)
+
+        hbox.addSpacing(200)
+
+        self.contentbox.addLayout(hbox)
+
+
+        self.contentbox.addSpacing(250)
+
+    def buttonhandler(self):
+
+        msgbox = QtGui.QMessageBox()
+        msgbox.setStyleSheet("QMessageBox { background-color : white}")
+
+        reply = QtGui.QMessageBox.information(msgbox, 'Message',
+                "Product is up to date", QtGui.QMessageBox.Ok)
+
+        self.isUpdate_icn = QtGui.QPixmap('%s\Pics\\isUpdate.png'%os.getcwd())
+        self.isUpdate_lb.setPixmap(self.isUpdate_icn)
+
+
+class KalaAghsatiList(QtGui.QWidget):
+
+    pass
+
+
+class PaymentInformation(QtGui.QWidget):
+
+    pass
+
+
+class Support(QtGui.QWidget):
+
+    def __init__(self):
+
+        QtGui.QWidget.__init__(self, parent=None)
+
+
+        self.contentbox = QtGui.QVBoxLayout()
+        self.contentbox.setContentsMargins(50, 10, 50, 0)
+        self.setLayout(self.contentbox)
+        self.contentbox.addSpacing(10)
+        #self.contentbox.setMargin(50)
+
+
+        title = QtGui.QLabel('Customer Care:')
+        title.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 12)
+        font.setBold(True)
+        title.setFont(font)
+
+        self.contentbox.addWidget(title)
+
+        generaldescription = QtGui.QLabel()
+        generaldescription.setTextFormat(QtCore.Qt.RichText)
+        generaldescription.setText("To get support you can easily send an email to <a href='mailto:memarnejadm74@google.com?subject=Support'>memarnejadm74@gmail.com</a>" )
+        generaldescription.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        generaldescription.setFont(font)
+
+        self.contentbox.addWidget(generaldescription)
+
+        seperator = QtGui.QLabel('')
+        seperator.setStyleSheet('QLabel{background-color : white;}')
+        self.contentbox.addWidget(seperator)
+        seperator.setFrameStyle(QtGui.QFrame.HLine)
+        seperator.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.contentbox.addSpacing(10)
+
+        title2 = QtGui.QLabel('Online Support:')
+        title2.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 12)
+        font.setBold(True)
+        title2.setFont(font)
+
+        self.contentbox.addWidget(title2)
+
+        coursedetail = QtGui.QLabel("Visit our website at <font color='blue'>www.example.com </font>for getting online support, see FAQ and so on." )
+        coursedetail.setStyleSheet('QLabel{background-color : white;}')
+        font = QtGui.QFont('Arial', 9)
+        coursedetail.setFont(font)
+
+        self.contentbox.addWidget(coursedetail)
+        self.contentbox.addSpacing(70)
+
+
 class SMSInfo(QtGui.QWidget):
 
     def __init__(self):
@@ -2465,6 +2655,7 @@ class SMSInfo(QtGui.QWidget):
 
         self.contentbox.addWidget(generaldescription)
 
+
         seperator = QtGui.QLabel('')
         seperator.setStyleSheet('QLabel{background-color : white;}')
         self.contentbox.addWidget(seperator)
@@ -2473,20 +2664,37 @@ class SMSInfo(QtGui.QWidget):
 
         self.contentbox.addSpacing(10)
 
+        hbox = QtGui.QHBoxLayout()
+
+        iustlogo_lb = QtGui.QLabel()
+        iustlogo_lb.setStyleSheet('QLabel{background-color : white;}')
+        iustlogo = QtGui.QPixmap('%s\Pics\iustlogo.png'%os.getcwd())
+        #icn_pic = icn_pic.scaled(icn_lb.size(), QtCore.Qt.KeepAspectRatio)
+        iustlogo_lb.setPixmap(iustlogo)
+
+        hbox.addWidget(iustlogo_lb)
+
+        vbox = QtGui.QVBoxLayout()
+
         title2 = QtGui.QLabel('Course Details:')
         title2.setStyleSheet('QLabel{background-color : white;}')
         font = QtGui.QFont('Arial', 12)
         font.setBold(True)
         title2.setFont(font)
 
-        self.contentbox.addWidget(title2)
+        vbox.addWidget(title2)
+
 
         coursedetail = QtGui.QLabel('Professor: Dr.Parsa\nTeacher Assistant: Mehrdad Saffarie and Vahid Kharazi\nIran University of Science and Technology (IUST),Spring 1394' )
         coursedetail.setStyleSheet('QLabel{background-color : white;}')
         font = QtGui.QFont('Arial', 9)
         coursedetail.setFont(font)
 
-        self.contentbox.addWidget(coursedetail)
+        vbox.addWidget(coursedetail)
+        hbox.addLayout(vbox)
+        hbox.setContentsMargins(0, 0, 100, 0)
+        self.contentbox.addLayout(hbox)
+
         self.contentbox.addSpacing(70)
 
 
