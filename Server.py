@@ -3,7 +3,9 @@ import threading
 import SocketServer
 import ast
 
-import database
+import dbtest
+
+
 class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
     def handle(self):
@@ -12,86 +14,90 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
         cur_thread = threading.current_thread()
         response = bytes(data)
-        b=ast.literal_eval(data)
+        b = ast.literal_eval(data)
         print b
 
-        if b[1]=='newEmployeeSQL':
-            a=dbtest.insertIntoEmployee(b[0])
+        if b[1] == 'newEmployeeSQL':
+            a = dbtest.insertIntoEmployee(b[0])
             response = bytes(a)
             print response
-        elif b[1]=='modifyEmployeeSQL':
-            dbtest.updateEmployee(b[0])
-        elif b[1]=='removeEmployeeSQL':
+
+
+        elif b[1] == 'modifyEmployeeSQL':
+            a = dbtest.updateEmployee(b[0])
+            response = bytes(a)
+
+        elif b[1] == 'removeEmployeeSQL':
             dbtest.deleteEmployee(b[0])
 
-        elif b[1]=='searchAllEmployeeSQL':
-            m=dbtest.searchAllEmployee()
+        elif b[1] == 'searchAllEmployeeSQL':
+            m = dbtest.searchAllEmployee()
             response = (bytes(m))
-        elif b[1]=='searchByFirst NameEmployeeSQL':
-            o=dbtest.searchByNameEmployee(b[0])
+        elif b[1] == 'searchByFirst NameEmployeeSQL':
+            o = dbtest.searchByNameEmployee(b[0])
             response = bytes(o)
-        elif b[1]=='searchByLast NameEmployeeSQL':
-            s=dbtest.searchByLNameEmployee(b[0])
+        elif b[1] == 'searchByLast NameEmployeeSQL':
+            s = dbtest.searchByLNameEmployee(b[0])
             response = bytes(s)
 
 
-        elif b[1]=='newKalaSQL':
+        elif b[1] == 'newKalaSQL':
             dbtest.insertIntoKala(b[0])
-        elif b[1]=='modifyKalaSQL':
+        elif b[1] == 'modifyKalaSQL':
             dbtest.updateKala(b[0])
-        elif b[1]=='removeKalaSQL':
+        elif b[1] == 'removeKalaSQL':
             dbtest.deleteKala(b[0])
 
-        elif b[1]=='searchAllItemSQL':
-            n=dbtest.searchKala()
+        elif b[1] == 'searchAllItemSQL':
+            n = dbtest.searchKala()
             response = bytes(n)
-        elif b[1]=='searchByNameItemSQL':
-            t=dbtest.searchByNameKala(b[0])
+        elif b[1] == 'searchByNameItemSQL':
+            t = dbtest.searchByNameKala(b[0])
             response = bytes(t)
-        elif b[1]=='searchByNameItemSQL':
-            t=dbtest.searchByNameKala(b[0])
+        elif b[1] == 'searchByNameItemSQL':
+            t = dbtest.searchByNameKala(b[0])
             response = bytes(t)
-        elif b[1]=='searchByCategoryItemSQL':
-            t=dbtest.searchByCategoryKala(b[0])
+        elif b[1] == 'searchByCategoryItemSQL':
+            t = dbtest.searchByCategoryKala(b[0])
             response = bytes(t)
-        elif b[1]=='searchByNumberItemSQL':
-            t=dbtest.searchByNumberKala()
+        elif b[1] == 'searchByNumberItemSQL':
+            t = dbtest.searchByNumberKala()
             response = bytes(t)
 
 
-        elif b[1]=='newProducerSQL':
+        elif b[1] == 'newProducerSQL':
             dbtest.insertIntoProducer(b[0])
-        elif b[1]=='modifyProducerSQL':
+        elif b[1] == 'modifyProducerSQL':
             dbtest.updateProducer(b[0])
-        elif b[1]=='removeProducerSQL':
+        elif b[1] == 'removeProducerSQL':
             dbtest.deleteProducer(b[0])
 
-        elif b[1]=='searchAllProducerSQL':
-            w=dbtest.searchProducer()
+        elif b[1] == 'searchAllProducerSQL':
+            w = dbtest.searchProducer()
             response = bytes(w)
-        elif b[1]=='searchByNameProducerSQL':
-            q=dbtest.searchByNameProducer(b[0])
+        elif b[1] == 'searchByNameProducerSQL':
+            q = dbtest.searchByNameProducer(b[0])
             response = bytes(q)
-        elif b[1]=='searchByCodeProducerSQL':
-            q=dbtest.searchByCodeProducer(b[0])
+        elif b[1] == 'searchByCodeProducerSQL':
+            q = dbtest.searchByCodeProducer(b[0])
             response = bytes(q)
 
 
-        elif b[1]=='newOrderSQL':
+        elif b[1] == 'newOrderSQL':
             dbtest.insertIntoOrder(b[0])
-        elif b[1]=='modifyOrderSQL':
+        elif b[1] == 'modifyOrderSQL':
             dbtest.updateOrder(b[0])
-        elif b[1]=='removeOrderSQL':
+        elif b[1] == 'removeOrderSQL':
             dbtest.deleteOrder(b[0])
 
-        elif b[1]=='searchAllOrderSQL':
-            m=dbtest.searchOrder()
+        elif b[1] == 'searchAllOrderSQL':
+            m = dbtest.searchOrder()
             response = (bytes(m))
-        elif b[1]=='searchByNameOrderSQL':
-            o=dbtest.searchByNameOrder(b[0])
+        elif b[1] == 'searchByNameOrderSQL':
+            o = dbtest.searchByNameOrder(b[0])
             response = bytes(o)
-        elif b[1]=='searchByCodeOrderSQL':
-            s=dbtest.searchByCodeOrder(b[0])
+        elif b[1] == 'searchByCodeOrderSQL':
+            s = dbtest.searchByCodeOrder(b[0])
             response = bytes(s)
 
 
@@ -130,6 +136,3 @@ if __name__ == "__main__":
 
     server.serve_forever()
     #server.shutdown()
-    
-
-   
