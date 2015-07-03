@@ -1,13 +1,13 @@
 __author__ = 'mehdi'
 
 import pyodbc
-cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=MMJAZ;DATABASE=StoreManagement;UID=test;PWD=jaziryan')
+cnxn = pyodbc.connect('DRIVER={SQL Server}; SERVER=Memarnejad; DATABASE=Store Management System DB')
 cursor = cnxn.cursor()
 
 #Insert:
 def insertIntoEmployee(k):
     try:
-        cursor.execute("INSERT INTO Employee(FName,LName,FathersName,Shenasname,Nationality,Religous,Mobile,Phone,BirthPlace,Email) VALUES(?,?,?,?,?,?,?,?,?,?)",k)
+        cursor.execute("INSERT INTO employee(fname,lname,fathername,shenasname,nationality,religous,mobile,phone,birthplace,email) VALUES(?,?,?,?,?,?,?,?,?,?)",k)
     except Exception,e:
         '''a= 'DB exception: %s' % e'''
         return 'UnSuccessfull'
@@ -51,8 +51,9 @@ def insertIntoOrder(k):
 
 #Update:
 def updateEmployee(k):
-    cursor.execute("UPDATE Employee SET FName=?,LName=?,FathersName=?,Shenasname=?,Nationality=?,Religous=?,Mobile=?,Phone=?,BirthPlace=?,Email=? WHERE id=(?)",(k[1],k[2],k[3],k[4],k[5],k[6],k[7],k[8],k[9],k[10],k[0]))
+    cursor.execute("UPDATE employee SET fname=?,lname=?,fathername=?,shenasname=?,nationality=?,religous=?,mobile=?,phone=?,birthplace=?,email=? WHERE EID=(?)",(k[1],k[2],k[3],k[4],k[5],k[6],k[7],k[8],k[9],k[10],k[0]))
     cnxn.commit()
+    return k
 
 def updateKala(k):
     cursor.execute("UPDATE Kala SET code=?,name=(?),category=?,factory=?,produce=?,expire=?,number=?,shelf=?,price=? WHERE id=(?)",(k[1],k[2],k[3],k[4],k[5],k[6],k[7],k[8],k[9],k[0]))
@@ -91,17 +92,17 @@ def deleteOrder(k):
 
 #Search of Employee:
 def searchAllEmployee():
-    cursor.execute("select * from Employee")
+    cursor.execute("select * from employee")
     row = cursor.fetchall()
     return row
 
 def searchByNameEmployee(k):
-    cursor.execute("select * from Employee where FName=(?) ",k[0])
+    cursor.execute("select * from employee where fname=(?) ",k[0])
     row = cursor.fetchall()
     return row
 
 def searchByLNameEmployee(k):
-    cursor.execute("select * from Employee where LName=(?) ",k[0])
+    cursor.execute("select * from employee where lname=(?) ",k[0])
     row = cursor.fetchall()
     return row
 
